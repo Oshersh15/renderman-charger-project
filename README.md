@@ -32,3 +32,7 @@ If modifications are made to the source `.osl` files, they must be recompiled us
 ## Output
 
 The rendered image will be written to the path specified by `RENDER_OUTPUT` in `config.py`.
+
+## Documentation
+
+- [Project Report](docs/RenderMan_Report.pdf)
