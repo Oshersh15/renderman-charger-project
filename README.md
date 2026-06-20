@@ -2,6 +2,8 @@
 
 This project recreates an Apple USB-C power adapter using the RenderMan Python API. The scene includes custom geometry generation, physically based materials, image textures, custom OSL shaders, HDRI lighting and depth of field.
 
+<img src="https://github.com/user-attachments/assets/3dda3fba-5cf2-4c1a-8205-1315a6aeaf44" width="500">
+
 ## Running the Project
 
 Run from the project root:
