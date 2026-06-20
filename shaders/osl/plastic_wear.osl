@@ -1,0 +1,83 @@
+float hash(float n)
+{
+    float h = sin(n) * 43758.5453123;
+    return h - floor(h);
+}
+
+shader plastic_wear(
+    color cleanColor = color(0.82, 0.80, 0.76),
+
+    float spotScale = 3.0,
+    float spotThreshold = 0.62,
+    float spotRadius = 0.26,
+    float spotSoftness = 0.12,
+    float shapeNoise = 0.18,
+
+    float spotDarkness = 0.16,
+    float roughnessBase = 0.16,
+    float roughnessBoost = 0.45,
+    
+    float patternSeed = 0.0,
+    float patternOffsetX = 0.0,
+    float patternOffsetY = 0.0,
+    float patternAngle = 0.0,
+
+    output color baseColorOut = 0,
+    output float roughnessOut = 0.16,
+    output color debugRGB = 0,
+    output float bumpOut = 0.0
+)
+{
+    point PP = transform("object", P);
+
+    float px = PP[0] + patternOffsetX;
+    float py = PP[2] + patternOffsetY;
+    
+    float a = radians(patternAngle);
+    
+    float rx = px * cos(a) - py * sin(a);
+    float ry = px * sin(a) + py * cos(a);
+    
+    float x = rx * spotScale;
+    float y = ry * spotScale;
+
+    float cellX = floor(x);
+    float cellY = floor(y);
+
+    float localX = x - cellX;
+    float localY = y - cellY;
+
+    float id = cellX * 37.0 + cellY * 91.0 + patternSeed * 101.0;
+
+    float keep = hash(id);
+    float centreX = 0.25 + hash(id + 11.0) * 0.5;
+    float centreY = 0.25 + hash(id + 23.0) * 0.5;
+    float randomRadius = spotRadius * (0.65 + hash(id + 41.0) * 0.7);
+
+    float dx = localX - centreX;
+    float dy = localY - centreY;
+
+    float dist = sqrt(dx * dx + dy * dy);
+
+    // Break the perfect circular shape slightly.
+    float edgeNoise = noise("perlin", localX * 8.0 + id, localY * 8.0);
+    dist += (edgeNoise - 0.5) * shapeNoise;
+
+    float randomSoftness = spotSoftness * (0.8 + hash(id + 67.0) * 1.8);
+
+    float spot = 1.0 - smoothstep(randomRadius, randomRadius + randomSoftness, dist);
+    
+    float mask = smoothstep(spotThreshold, 1.0, keep);
+    
+    // Smaller dents become shallower, larger dents become deeper.
+    // This keeps the dents feeling more visually consistent.
+    float radiusDepth = randomRadius / spotRadius;
+
+    float wear = clamp(spot * mask * radiusDepth, 0.0, 1.0);
+
+    baseColorOut = cleanColor - color(wear * spotDarkness);
+    roughnessOut = roughnessBase + wear * roughnessBoost;
+    bumpOut = (1.0 - wear) * 0.08;
+
+    debugRGB = color(wear, wear, wear);
+}

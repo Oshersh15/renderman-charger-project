@@ -1,0 +1,20 @@
+shader plastic_wear(
+    float wearStrength = 1.0,
+    output float roughnessOut = 0.16,
+    output color debugRGB = 0
+)
+{
+    point PP = transform("object", P);
+
+    float x = PP[0];
+    float z = PP[2];
+
+    float scratches = noise("perlin",
+                            x * 40.0,
+                            z * 1.0);
+
+    scratches = smoothstep(0.75, 1.0, scratches);
+
+    roughnessOut = scratches * wearStrength;
+    debugRGB = color(scratches, scratches, scratches);
+}

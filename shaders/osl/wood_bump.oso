@@ -1,0 +1,141 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.13.0.@PROJECT_VERSION_TWEAK@"dev"
+# options: -o shaders/osl/wood_bump.oso
+shader wood_bump
+param	float	grainAngle	45		%read{7,7} %write{2147483647,-1}
+param	float	grainScale	1.20000005		%read{3,5} %write{2147483647,-1}
+param	float	lineDensity	18		%read{23,23} %write{2147483647,-1}
+param	float	warpStrength	0.349999994		%read{21,21} %write{2147483647,-1}
+param	float	contrast	1.79999995		%read{34,34} %write{2147483647,-1}
+param	float	grainStrength	0.0799999982		%read{39,39} %write{2147483647,-1}
+oparam	float	resultF	0		%read{2147483647,-1} %write{39,39}
+oparam	color	resultRGB	0 0 0		%read{2147483647,-1} %write{40,40}
+global	point	P	%read{1,1} %write{2147483647,-1}
+local	point	PP	%read{2,4} %write{1,1}
+local	float	x	%read{9,14} %write{3,3}
+local	float	z	%read{11,16} %write{5,5}
+local	float	a	%read{8,15} %write{7,7}
+local	float	rx	%read{18,26} %write{12,12}
+local	float	rz	%read{19,28} %write{17,17}
+local	float	warp	%read{22,26} %write{21,21}
+local	float	grainA	%read{30,30} %write{25,25}
+local	float	grainB	%read{31,31} %write{29,29}
+local	float	height	%read{33,40} %write{32,38}
+const	string	$const1	"object"		%read{1,1} %write{2147483647,-1}
+const	string	$const2	"transform"		%read{0,0} %write{2147483647,-1}
+const	string	$const3	"common"		%read{1,1} %write{2147483647,-1}
+const	int	$const4	0		%read{2,2} %write{2147483647,-1}
+temp	float	$tmp1	%read{3,3} %write{2,2}
+const	int	$const5	2		%read{4,4} %write{2147483647,-1}
+temp	float	$tmp2	%read{5,5} %write{4,4}
+const	string	$const6	"radians"		%read{6,6} %write{2147483647,-1}
+const	float	$const7	0.0174532924		%read{7,7} %write{2147483647,-1}
+temp	float	$tmp3	%read{9,9} %write{8,8}
+temp	float	$tmp4	%read{12,12} %write{9,9}
+temp	float	$tmp5	%read{11,11} %write{10,10}
+temp	float	$tmp6	%read{12,12} %write{11,11}
+temp	float	$tmp7	%read{14,14} %write{13,13}
+temp	float	$tmp8	%read{17,17} %write{14,14}
+temp	float	$tmp9	%read{16,16} %write{15,15}
+temp	float	$tmp10	%read{17,17} %write{16,16}
+temp	float	$tmp11	%read{21,21} %write{20,20}
+const	string	$const8	"perlin"		%read{20,29} %write{2147483647,-1}
+const	float	$const9	0.800000012		%read{18,18} %write{2147483647,-1}
+temp	float	$tmp12	%read{20,20} %write{18,18}
+const	float	$const10	0.25		%read{19,38} %write{2147483647,-1}
+temp	float	$tmp13	%read{20,20} %write{19,19}
+temp	float	$tmp14	%read{23,23} %write{22,22}
+temp	float	$tmp15	%read{25,25} %write{23,23}
+const	float	$const11	0.550000012		%read{24,24} %write{2147483647,-1}
+temp	float	$tmp16	%read{25,25} %write{24,24}
+temp	float	$tmp17	%read{27,27} %write{26,26}
+const	float	$const12	4		%read{27,27} %write{2147483647,-1}
+temp	float	$tmp18	%read{29,29} %write{27,27}
+temp	float	$tmp19	%read{29,29} %write{28,28}
+const	float	$const13	0.649999976		%read{30,30} %write{2147483647,-1}
+temp	float	$tmp20	%read{32,32} %write{30,30}
+const	float	$const14	0.349999994		%read{31,31} %write{2147483647,-1}
+temp	float	$tmp21	%read{32,32} %write{31,31}
+const	float	$const15	0.5		%read{33,35} %write{2147483647,-1}
+temp	float	$tmp22	%read{34,34} %write{33,33}
+temp	float	$tmp23	%read{35,35} %write{34,34}
+const	float	$const16	0.75		%read{37,37} %write{2147483647,-1}
+const	string	$const17	"clamp"		%read{36,36} %write{2147483647,-1}
+temp	float	$tmp24	%read{38,38} %write{37,37}
+code ___main___
+# shaders/osl/wood_bump.osl:12
+#     point PP = transform("object", P);
+	functioncall	$const2 2 	%filename{"shaders/osl/wood_bump.osl"} %line{12} %argrw{"r"}
+# /opt/pixar/RenderManProServer-26.3/lib/osl/include/stdosl.h:263
+# point  transform (string to, point p)  { return transform("common",to,p); }
+	transform	PP $const3 $const1 P 	%filename{"/opt/pixar/RenderManProServer-26.3/lib/osl/include/stdosl.h"} %line{263} %argrw{"wrrr"}
+# shaders/osl/wood_bump.osl:14
+#     float x = PP[0] * grainScale;
+	compref		$tmp1 PP $const4 	%filename{"shaders/osl/wood_bump.osl"} %line{14} %argrw{"wrr"}
+	mul		x $tmp1 grainScale 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:15
+#     float z = PP[2] * grainScale;
+	compref		$tmp2 PP $const5 	%line{15} %argrw{"wrr"}
+	mul		z $tmp2 grainScale 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:17
+#     float a = radians(grainAngle);
+	functioncall	$const6 8 	%line{17} %argrw{"r"}
+# /opt/pixar/RenderManProServer-26.3/lib/osl/include/stdosl.h:65
+# float  radians (float x)  { return x*(M_PI/180.0); }
+	mul		a grainAngle $const7 	%filename{"/opt/pixar/RenderManProServer-26.3/lib/osl/include/stdosl.h"} %line{65} %argrw{"wrr"}
+# shaders/osl/wood_bump.osl:19
+#     float rx = x * cos(a) - z * sin(a);
+	cos		$tmp3 a 	%filename{"shaders/osl/wood_bump.osl"} %line{19} %argrw{"wr"}
+	mul		$tmp4 x $tmp3 	%argrw{"wrr"}
+	sin		$tmp5 a 	%argrw{"wr"}
+	mul		$tmp6 z $tmp5 	%argrw{"wrr"}
+	sub		rx $tmp4 $tmp6 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:20
+#     float rz = x * sin(a) + z * cos(a);
+	sin		$tmp7 a 	%line{20} %argrw{"wr"}
+	mul		$tmp8 x $tmp7 	%argrw{"wrr"}
+	cos		$tmp9 a 	%argrw{"wr"}
+	mul		$tmp10 z $tmp9 	%argrw{"wrr"}
+	add		rz $tmp8 $tmp10 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:23
+#     float warp = noise("perlin", rx * 0.8, rz * 0.25) * warpStrength;
+	mul		$tmp12 rx $const9 	%line{23} %argrw{"wrr"}
+	mul		$tmp13 rz $const10 	%argrw{"wrr"}
+	noise		$tmp11 $const8 $tmp12 $tmp13 	%argrw{"wrrr"}
+	mul		warp $tmp11 warpStrength 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:26
+#     float grainA = noise("perlin", (rx + warp) * lineDensity, rz * 0.55);
+	add		$tmp14 rx warp 	%line{26} %argrw{"wrr"}
+	mul		$tmp15 $tmp14 lineDensity 	%argrw{"wrr"}
+	mul		$tmp16 rz $const11 	%argrw{"wrr"}
+	noise		grainA $const8 $tmp15 $tmp16 	%argrw{"wrrr"}
+# shaders/osl/wood_bump.osl:29
+#     float grainB = noise("perlin", (rx + warp) * 4.0, rz * 0.25);
+	add		$tmp17 rx warp 	%line{29} %argrw{"wrr"}
+	mul		$tmp18 $tmp17 $const12 	%argrw{"wrr"}
+	mul		$tmp19 rz $const10 	%argrw{"wrr"}
+	noise		grainB $const8 $tmp18 $tmp19 	%argrw{"wrrr"}
+# shaders/osl/wood_bump.osl:31
+#     float height = grainA * 0.65 + grainB * 0.35;
+	mul		$tmp20 grainA $const13 	%line{31} %argrw{"wrr"}
+	mul		$tmp21 grainB $const14 	%argrw{"wrr"}
+	add		height $tmp20 $tmp21 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:34
+#     height = (height - 0.5) * contrast + 0.5;
+	sub		$tmp22 height $const15 	%line{34} %argrw{"wrr"}
+	mul		$tmp23 $tmp22 contrast 	%argrw{"wrr"}
+	add		height $tmp23 $const15 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:35
+#     height = clamp(height, 0.25, 0.75);
+	functioncall	$const17 39 	%line{35} %argrw{"r"}
+# /opt/pixar/RenderManProServer-26.3/lib/osl/include/stdosl.h:141
+# float  clamp (float x, float minval, float maxval) { return max(min(x,maxval),minval); }
+	min		$tmp24 height $const16 	%filename{"/opt/pixar/RenderManProServer-26.3/lib/osl/include/stdosl.h"} %line{141} %argrw{"wrr"}
+	max		height $tmp24 $const10 	%argrw{"wrr"}
+# shaders/osl/wood_bump.osl:37
+#     resultF = height * grainStrength;
+	mul		resultF height grainStrength 	%filename{"shaders/osl/wood_bump.osl"} %line{37} %argrw{"wrr"}
+# shaders/osl/wood_bump.osl:38
+#     resultRGB = color(height, height, height);
+	color		resultRGB height height height 	%line{38} %argrw{"wrrr"}
+	end

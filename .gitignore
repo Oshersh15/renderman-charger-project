@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+
+# Render outputs
+renders/
+output/
+images/
+*.exr
+*.tif
+*.tiff
+*.png
+*.jpg
+*.jpeg
+*.mov
+*.mp4
+
+# RenderMan generated/cache files
+*.rib
+*.tx
+*.bkm
+*.log
+
+# Houdini/Maya/cache/temp if relevant
+*.hiplc
+*.hipnc
+*.abc
+*.usd
+*.usdc
+*.usda
+*.vdb
+*.bgeo*
+*.sim
+cache/
+geo/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
